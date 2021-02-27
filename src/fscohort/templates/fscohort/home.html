@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Hello, this is home page</h1>
+    {{ title }} <br> <br>
+    {{ dict_1 }} <br> <br>
+    {% for i in my_list %}
+    {% if i == 3  %}
+    <p>Number's 3</p>
+    {% else %}
+    {{ i }} <br>
+    {% endif %}
+    {% endfor %}
+    {{ my_list }}
+</body>
+</html>
