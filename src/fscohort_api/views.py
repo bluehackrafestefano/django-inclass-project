@@ -1,4 +1,5 @@
-from django.shortcuts import render
+import re
+from django.shortcuts import get_object_or_404, render
 from django.http import JsonResponse
 from fscohort.models import Student
 from django.core.serializers import serialize
@@ -84,3 +85,26 @@ def student_list_create_api(request):
             }
             return Response(data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status)
+    
+    
+@api_view(["GET", "PUT", "DELETE"])
+def student_get_update_delete_api(request, id):
+    student = get_object_or_404(Student, id=id)
+    
+    if request.method == "GET":
+        serializer = StudentSerializer(student)
+        return Response(serializer.data)
+        
+    elif request.method == "PUT":
+        serializer = StudentSerializer(student, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            data = {
+                "message": "Student updated successfully"
+            }
+            return Response(data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == "DELETE":
+        student.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
