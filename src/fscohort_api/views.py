@@ -2,6 +2,7 @@ import re
 from django.shortcuts import get_object_or_404, render
 from django.http import JsonResponse
 from rest_framework import serializers
+from rest_framework import mixins
 from rest_framework.fields import SerializerMethodField
 from rest_framework.views import APIView
 from fscohort.models import Student
@@ -161,11 +162,36 @@ def home_api(request):
 #     serializer_class = StudentSerializer
 #     queryset = Student.objects.all()
     
-class StudentListCreate(generics.ListCreateAPIView):
-    serializer_class = StudentSerializer
-    queryset = Student.objects.all()
+# class StudentListCreate(generics.ListCreateAPIView):
+#     serializer_class = StudentSerializer
+#     queryset = Student.objects.all()
     
-class StudentGetUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
+# class StudentGetUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
+#     serializer_class = StudentSerializer
+#     queryset = Student.objects.all()
+#     lookup_field = 'id'
+
+class Student(generics.GenericAPIView, 
+              mixins.ListModelMixin, 
+              mixins.CreateModelMixin, 
+              mixins.UpdateModelMixin, 
+              mixins.RetrieveModelMixin, 
+              mixins.DestroyModelMixin):
+    
     serializer_class = StudentSerializer
     queryset = Student.objects.all()
     lookup_field = 'id'
+    
+    def get(self, request, id):
+        if id:
+            return self.retrieve(request)
+        return self.list(request)
+    
+    def post(self, request):
+        return self.create(request)
+    
+    def put(self, request, id):
+        return  self.update(request, id)
+    
+    def delete(self, request, id):
+        return self.destroy(request, id)
